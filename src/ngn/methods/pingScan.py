@@ -1,6 +1,17 @@
 import sys
-from scapy.all import sr,IP,ICMP
+sys.path.append("..")
+from scapy.all import sr1,IP,ICMP,conf
+from ngn.methods.submethods import ttlosd
 
-def scan(ip):
-    ans,unans=sr(IP(dst="1.1.1.1")/ICMP())
-    ans.summary( lambda ss,r : r.sprintf("{IP: %IP.src% is alive}") )
+conf.verb = 0
+
+def scan(ip, args):
+    #print(ip)
+    for i in range(args.pn):
+        p=sr1(IP(dst=ip)/ICMP()/"XXXXX",timeout=2)
+        if p:
+            #p.show()
+            IPh = p[IP]
+            ICMPh = p[ICMP]
+            print(ip + " (ICMP Reply) ttl: " + str(IPh.ttl) + "; " + "load: " + str(ICMPh.load) + " (OS Detection: " + ttlosd.main(IPh.ttl) + ")")
+            

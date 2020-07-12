@@ -5,11 +5,15 @@ import struct, socket
 
 parser = argparse.ArgumentParser()
 #parser.add_argument('--types', type=str, help='Choose query types')
+parser.add_argument('--pn', help="Number of ICMP packets to send.", type=int)
 #parser.add_argument('--detailed', help='Get a very detailed view of the responses', action="store_true")
 #parser.add_argument('--pretty', help='Get a very pretty view of the responses', action="store_true")
 parser.add_argument('-p', help='Run ICMP scan', action="store_true")
 
 arguments = parser.parse_known_args()
+
+if arguments[0].pn == None:
+    arguments[0].pn = 1
 
 #if arguments[0].detailed and arguments[0].pretty:
 #    print("[X] You can't use --detailed and --pretty at the same time!")
@@ -26,6 +30,6 @@ for target in sys.argv[1].split(","):
         end = start | ((1 << host_bits) - 1)
         # excludes the first and last address in the subnet
         for i in range(start, end):
-            print(socket.inet_ntoa(struct.pack('>I',i)))
+            targets.append(socket.inet_ntoa(struct.pack('>I',i)))
     else:
         targets.append(target)
